@@ -37,11 +37,11 @@ namespace Expression.Blend.SampleData.SampleDataSource
                 Uri resourceUri = new Uri("/SignalRWPFApp;component/SampleData/SampleDataSource/SampleDataSource.xaml", UriKind.RelativeOrAbsolute);
                 System.Windows.Application.LoadComponent(this, resourceUri);
 
-                //Set connection
-                var connection = new HubConnection("http://localhost:60599/");
-                //Make proxy to hub based on hub name on server
-                var myHub = connection.CreateHubProxy("RealTimeHub");
-                //Start connection
+                ////Set connection
+                //var connection = new HubConnection("http://localhost:60599/");
+                ////Make proxy to hub based on hub name on server
+                //var myHub = connection.CreateHubProxy("RealTimeHub");
+                ////Start connection
 
 
                 _Collection = new ItemCollection
@@ -53,61 +53,70 @@ namespace Expression.Blend.SampleData.SampleDataSource
                     }
                 };
 
-                myHub.On<string>("addMessage", param => {
-                    //Console.WriteLine(param);
+                //myHub.On<string>("addMessage", param => {
+                //    //Console.WriteLine(param);
 
-                    var keyValue = param.Split(':');
-                    var findIndex = _Collection.ToList().FindIndex(v => v.SettingsName == keyValue[1]);
+                //    param = param.Replace("Server:", "");
 
-                    if (findIndex > -1)
-                    {
-                        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
-                        {
-                            var item = _Collection.ElementAt(findIndex).SettingsValue = keyValue[2];
-                            _Collection.RemoveAt(findIndex);
-                            _Collection.Insert(findIndex, new Item
-                            {
-                                SettingsName = keyValue[1],
-                                SettingsValue = keyValue[2]
-                            });
-                        });
+                //    var keyValue = param.Split(':');
+                    
+                //    var findIndex = _Collection.ToList().FindIndex(v => v.SettingsName == keyValue[0]);
+
+                //    if (findIndex > -1)
+                //    {
+                //        App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                //        {
+                //            var item = _Collection.ElementAt(findIndex).SettingsValue = keyValue[1];
+                //            _Collection.RemoveAt(findIndex);
+                //            _Collection.Insert(findIndex, new Item
+                //            {
+                //                SettingsName = keyValue[1],
+                //                SettingsValue = keyValue[2]
+                //            });
+                //        });
 
                      
-                    }
-                    else
-                    {
-                        App.Current.Dispatcher.Invoke((Action) delegate // <--- HERE
-                        {
-                            _Collection.Add(new Item
-                            {
-                                SettingsName = keyValue[1],
-                                SettingsValue = keyValue[2]
-                            });
-                        });
-                    }
+                //    }
+                //    else if(findIndex == -1 && param.Contains(':'))
+                //    {
+                //        App.Current.Dispatcher.Invoke((Action) delegate // <--- HERE
+                //        {
+                //            _Collection.Add(new Item
+                //            {
+                //                SettingsName = keyValue[0],
+                //                SettingsValue = keyValue[1]
+                //            });
+                //        });
+                //    }
+                //    else
+                //    {
+                //        this.DynamicText += param + Environment.NewLine;
+                //    }
 
-                    //setting.
-                });
+                //    //setting.
+                //});
 
-                var isConnected = false;
+                //var isConnected = false;
 
-                while (!isConnected)
-                {
-                    connection.Start().ContinueWith(task =>
-                    {
-                        if (task.IsFaulted)
-                        {
-                            Console.WriteLine("There was an error opening the connection:{0}",
-                                task.Exception.GetBaseException());
-                            Thread.Sleep(2000);
-                        }
-                        else
-                        {
-                            isConnected = true;
-                        }
+                //while (!isConnected)
+                //{
+                //    connection.Start().ContinueWith(task =>
+                //    {
+                //        if (task.IsFaulted)
+                //        {
+                //            Console.WriteLine("There was an error opening the connection:{0}",
+                //                task.Exception.GetBaseException());
+                //            _connectionStatus = "There was an error opening the connection";
+                //            Thread.Sleep(2000);
+                //        }
+                //        else
+                //        {
+                //            isConnected = true;
+                //            _connectionStatus = "Connected!";
+                //        }
 
-                    }).Wait();
-                }
+                //    }).Wait();
+                //}
             }
             catch
             {
@@ -123,6 +132,45 @@ namespace Expression.Blend.SampleData.SampleDataSource
                 return this._Collection;
             }
         }
+
+        private string _connectionStatus = "Connecting...";
+
+        public string ConnectionStatus
+        {
+            get
+            {
+                return this._connectionStatus;
+            }
+
+            set
+            {
+                if (this._connectionStatus != value)
+                {
+                    this._connectionStatus = value;
+                    this.OnPropertyChanged("ConnectionStatus");
+                }
+            }
+        }
+
+        private string _dynamicText = string.Empty;
+
+        public string DynamicText
+        {
+            get
+            {
+                return this._dynamicText;
+            }
+
+            set
+            {
+                if (this._dynamicText != value)
+                {
+                    this._dynamicText = value;
+                    this.OnPropertyChanged("DynamicText");
+                }
+            }
+        }
+
     }
 
     public class Item : INotifyPropertyChanged

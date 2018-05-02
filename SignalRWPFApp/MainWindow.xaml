@@ -47,7 +47,7 @@
         <Style TargetType="ContentControl" x:Key="controlStyle">
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Stretch"/>
-            
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
@@ -59,25 +59,100 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid >
-        <DataGrid x:Name="datagrid"  TargetUpdated="DataGrid_TargetUpdated" AutoGenerateColumns="False"
-                  >
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding SettingsName}" Header="SettingsName"/>
-               
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ContentControl Style="{StaticResource controlStyle}" TargetUpdated="ContentControl_TargetUpdated" Content="{Binding SettingsValue, NotifyOnTargetUpdated=True}">
-                            
-                                
-                            </ContentControl>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-            </DataGrid.Columns>
-        </DataGrid>
-        <Button Click="Button_Click" Height="100" VerticalAlignment="Bottom" Content="Change Value"/>
+    <Border Padding="10">
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border CornerRadius="4" Background="ForestGreen" Padding="10,4" HorizontalAlignment="Right" Margin="0,0,10,15" >
+                <TextBlock Text="{Binding ConnectionStatus}" Foreground="White"/>
+            </Border>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".75*"/>
+                    <ColumnDefinition Width=".25*"/>
+                </Grid.ColumnDefinitions>
+                <Border  CornerRadius="6" Background="#FFf7f7f7" Padding="10" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".75*"/>
+                            <RowDefinition Height=".25*"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid VerticalGridLinesBrush="LightGray" HorizontalGridLinesBrush="LightGray" FontSize="14" BorderBrush="LightGray" Background="Transparent" Margin="0,10" x:Name="datagrid" TargetUpdated="DataGrid_TargetUpdated" AutoGenerateColumns="False"
+                    >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Binding="{Binding SettingsName}" Header="Settings Name" />
+                                <!--<DataGridTemplateColumn Header="Name">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Style="{StaticResource controlStyle}" TargetUpdated="ContentControl_TargetUpdated" Content="{Binding SettingsName, NotifyOnTargetUpdated=True}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>-->
+                                <DataGridTemplateColumn Header="Data">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ContentControl Style="{StaticResource controlStyle}" TargetUpdated="ContentControl_TargetUpdated" Content="{Binding SettingsValue, NotifyOnTargetUpdated=True}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <Border  CornerRadius="6" Background="#FFeaeaea" Padding="10" Grid.Row="1" >
+                            <StackPanel Grid.Row="1">
+                            <!--<StackPanel Width="300">
+                            <TextBlock Text="Settings Name"/>
+                            <TextBox IsReadOnly="True" Text="Settings Name"/>
+                        </StackPanel>-->
+                            <StackPanel Margin="0,12" Width="500" HorizontalAlignment="Left">
+                                <TextBlock Text="Value"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
 
-    </Grid>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox FontSize="16" Padding="8" Name="InputData" Text="{Binding ElementName=datagrid,Path=SelectedItem.SettingsValue,Mode=OneWay}"/>
+                                    <Button Content="Submit" Grid.Column="1" Margin="10,0" Padding="20,5" Click="ButtonBase_OnClick"/>
+                                </Grid>
+
+                            </StackPanel>
+                        </StackPanel>
+                            </Border>
+
+                    </Grid>
+                </Border>
+
+                <Border Margin="10,0" CornerRadius="6" Background="#FFf7f7f7" Padding="10" Grid.Column="1">
+                    <Grid Grid.Row="2" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="RAW DATA" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <!--<ItemsControl>
+               <ItemsControl.ItemTemplate>
+                   <DataTemplate>
+                       <TextBlock Text="{Binding}"></TextBlock>
+                   </DataTemplate>
+               </ItemsControl.ItemTemplate>
+           </ItemsControl>-->
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <TextBlock Text="{Binding DynamicText}" Grid.Row="2"/>
+                        </ScrollViewer>
+
+                    </Grid>
+                </Border>
+
+            </Grid>
+
+
+
+            <!--<Button Click="Button_Click" Grid.Row="2" Height="100" VerticalAlignment="Bottom" Content="Change Value"/>-->
+
+
+        </Grid>
+    </Border>
+
 </Window>
