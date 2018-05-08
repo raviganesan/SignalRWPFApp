@@ -34,6 +34,7 @@ namespace SignalRWPFApp
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            var uiContext = SynchronizationContext.Current;
             datagrid.ItemsSource = sd.Collection;
 
             //Set connection
@@ -63,16 +64,30 @@ namespace SignalRWPFApp
 
                 if (findIndex > -1)
                 {
-                    App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                    //App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                    //{
+                    try
                     {
-                        var item = sd.Collection.ElementAt(findIndex).SettingsValue = keyValue[1];
-                        sd.Collection.RemoveAt(findIndex);
-                        sd.Collection.Insert(findIndex, new Item
+                        Task.Run(() =>
                         {
-                            SettingsName = keyValue[0],
-                            SettingsValue = keyValue[1]
+                            App.Current.Dispatcher.BeginInvoke((Action)delegate
+                            {
+                                var item = sd.Collection.ElementAt(findIndex).SettingsValue = keyValue[1];
+                                sd.Collection.RemoveAt(findIndex);
+                                sd.Collection.Insert(findIndex, new Item
+                                {
+                                    SettingsName = keyValue[0],
+                                    SettingsValue = keyValue[1]
+                                });
+                            });
                         });
-                    });
+                     
+                    }catch(Exception ex)
+                    {
+                        MessageBox.Show("Error: "+ex.Message);
+                    }
+
+                    //});
 
 
                 }

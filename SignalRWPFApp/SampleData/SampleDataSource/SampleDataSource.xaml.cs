@@ -48,8 +48,8 @@ namespace Expression.Blend.SampleData.SampleDataSource
                 {
                     new Item
                     {
-                        SettingsName = "BidRecommendationService",
-                        SettingsValue = "{IsStacked=False}"
+                        SettingsName = "BidRule",
+                        SettingsValue = "{Qty=10,BidProgram:HPQ}"
                     }
                 };
 
